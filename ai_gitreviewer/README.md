@@ -20,23 +20,6 @@ Since you have a working Static Analysis Engine (Level 1), your README should re
 
 Here is a professional, structured README.md that focuses exactly on what you have built so far, while setting the stage for the NLP phase.
 
-🧠 AI-GitReviewer
-AI-GitReviewer is a hybrid static analysis CLI tool designed to audit Python code changes. It uses a dual-engine approach (AST + Regex) to catch security risks, logic bugs, and PEP8 violations before they are committed to your repository.
-
-🛠️ Current Capabilities (Phase 1: Static Engine)
-The tool currently performs deep structural analysis of your code using Python's ast module, with a robust Regex fallback for partial snippets.
-
-🔍 Issues Detected:
-Security: Detects dangerous eval() calls that could lead to code injection.
-
-Bug Prevention: Identifies Mutable Default Arguments (e.g., def func(x=[])) which cause shared-state bugs.
-
-Stability: Flags Bare except: blocks that silence critical system errors.
-
-Complexity: Monitors function signatures and flags functions with more than 5 arguments.
-
-Best Practices: Enforces is None for identity checks and discourages print() in favor of logging.
-
 ## 🚀 How to Use
 1. Installation
 Clone the repository and ensure you have a Python 3.x environment.

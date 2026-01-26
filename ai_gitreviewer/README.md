@@ -27,6 +27,12 @@ Clone the repository and ensure you have a Python 3.x environment.
 --> git clone https://github.com/your-username/ai-git-reviewer.git
 --> cd ai-git-reviewer
 
+2. Install Dependencies
+Use the requirements.txt file to install all necessary libraries
+
+--> pip install --upgrade pip
+--> pip install -r requirements.txt
+
 2. Running a Review
 The tool analyzes your staged changes (code you have git add-ed).
 

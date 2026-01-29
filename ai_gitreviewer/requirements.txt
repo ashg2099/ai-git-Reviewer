@@ -2,9 +2,13 @@
 pytest==7.4.0
 pytest-cov==4.1.0
 
-# Data Analysis & NLP (Level 2 Preparation)
+# Core AI Engine (PyTorch & Transformers)
+torch>=2.0.0
+transformers>=4.41.0,<5.0.0
+sentence-transformers>=3.0.0
+huggingface-hub<1.0
+
+# Utilities
 pandas
 scikit-learn
-
-# Core dependencies (if any specific ones arise)
-# transformers
+scipy

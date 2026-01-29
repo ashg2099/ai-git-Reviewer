@@ -1,29 +1,41 @@
 import ast
 import re
+from .nlp_engine import NLPEngine
 
 class ReviewerEngine:
-    def __init__(self):
-        self.issues = []
+    def __init__(self, use_ai=True):
+        self.use_ai = use_ai
+        self.nlp_engine = None
+        if self.use_ai:
+            self.nlp_engine = NLPEngine()
 
     def _clean_diff(self, diff_content):
-        """Removes git '+' markers to make the code valid Python for AST."""
         added_lines = []
         for line in diff_content.split('\n'):
+            # Skip '+++' and '---' headers, but keep '+' lines
             if line.startswith('+') and not line.startswith('+++'):
-                # We strip leading whitespace carefully to help AST parse snippets
+                # Strip the '+' but keep the original indentation
                 added_lines.append(line[1:])
         return "\n".join(added_lines)
 
-    def analyze_content(self, diff_content):
-        """Performs deep analysis on the added code."""
+    def analyze_content(self, content):
+        """Handles both raw file content and Git diffs."""
         file_issues = []
-        clean_code = self._clean_diff(diff_content)
         
+        is_diff = content.startswith('diff --git') or content.startswith('index ')
+        
+        if is_diff:
+            print("DEBUG: Processing as Git Diff")
+            clean_code = self._clean_diff(content)
+        else:
+            clean_code = content
+
         if not clean_code.strip():
+            print("DEBUG: Clean code is empty, skipping analysis.")
             return file_issues
 
+        # --- LEVEL 1: STRUCTURAL ANALYSIS (AST) ---
         try:
-            # 1. AST Analysis
             tree = ast.parse(clean_code)
             for node in ast.walk(tree):
                 # Rule 1: print()
@@ -47,28 +59,44 @@ class ReviewerEngine:
                     arg_count = len(node.args.args)
                     if arg_count > 5:
                         file_issues.append(f"L{node.lineno}: Function '{node.name}' has too many arguments ({arg_count}).")
-                # 5. Catch Mutable Default Arguments (e.g., def func(x=[]))
+
+                # Rule 5: Mutable Default Arguments
                 if isinstance(node, ast.FunctionDef):
                     for default in node.args.defaults:
-                        # Check if the default value is a List [] or a Dictionary {}
                         if isinstance(default, (ast.List, ast.Dict)):
                             file_issues.append(f"L{node.lineno}: Dangerous mutable default argument detected in '{node.name}'. Use 'None' instead.")
-                # 6. Catch Bare Except blocks
+
+                # Rule 6: Bare Except blocks
                 if isinstance(node, ast.ExceptHandler) and node.type is None:
-                    file_issues.append(f"L{node.lineno}: Bare 'except:' caught. Specify an exception type (e.g., Exception) to avoid silencing system errors.")
+                    file_issues.append(f"L{node.lineno}: Bare 'except:' caught. Specify an exception type.")
+                    
+                # Rule 7: Simple Recursion Detection
+                if isinstance(node, ast.FunctionDef):
+                    func_name = node.name
+                    for sub_node in ast.walk(node):
+                        # If the function calls itself...
+                        if isinstance(sub_node, ast.Call) and getattr(sub_node.func, 'id', None) == func_name:
+                            file_issues.append(f"L{sub_node.lineno}: Structural Recursion detected in '{func_name}'.")
             
         except SyntaxError:
-            # 2. Regex Fallback (Crucial for snippets that aren't valid full files)
+            # --- FALLBACK: REGEX ---
             if "print(" in clean_code:
                 file_issues.append("Found print() statement. Avoid print().")
             if "== None" in clean_code:
                 file_issues.append("Found '== None'. Use 'is None' for identity checks.")
             if "eval(" in clean_code:
                 file_issues.append("Security Risk: 'eval()' detected.")
-                
-            # Simple Regex to catch functions with many commas in the signature
-            # This looks for 'def' followed by anything and then at least 5 commas (6+ args)
             if re.search(r"def\s+\w+\(.*\s*,\s*.*\s*,\s*.*\s*,\s*.*\s*,\s*.*\)", clean_code):
-                 file_issues.append("Function has too many arguments. Aim for 3 or less.")
+                 file_issues.append("Function has too many arguments.")
+
+        # --- LEVEL 2: SEMANTIC ANALYSIS (CODEBERT) ---
+        # Only run if AI is enabled and the engine was successfully loaded
+        if self.use_ai and self.nlp_engine:
+            try:
+                if len(clean_code.strip()) > 15:
+                    ai_insights = self.nlp_engine.analyze(clean_code)
+                    file_issues.extend(ai_insights)
+            except Exception as e:
+                file_issues.append(f"AI Engine error: {str(e)}")
             
         return file_issues

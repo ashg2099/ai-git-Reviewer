@@ -16,3 +16,7 @@ htmlcov/
 
 # Mac system files
 .DS_Store
+
+# AI/ML - Hugging Face cache
+.cache/
+hub/

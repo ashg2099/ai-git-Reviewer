@@ -80,7 +80,7 @@ class NLPEngine:
         - Values: A JSON object with these EXACT keys:
             - "thinking": (String) One sentence on how this fix solves the core architectural problem.
             - "fix": (String) The actual code. This MUST be a single string. Use \n for new lines. Never use nested objects.
-            - "insight": (String) Why the original code was a production risk.
+            - "insight": A detailed explanation for the developer covering: (1) the precise technical reason this is a problem, (2) one concrete real-world consequence if left unfixed — name actual outcomes like data loss, RCE, silent corruption, or OOM crash, not vague risks, and (3) the exact condition under which a senior engineer could reasonably leave this unfixed. Write it as flowing prose in 3-4 sentences. No bullet points.
         
         ### ESCAPING RULE (CRITICAL)
         - If the code contains an f-string with a newline (e.g., f"\\n"), you must escape it correctly for JSON. 

@@ -179,7 +179,7 @@ class ReviewerEngine:
                 summary_for_ai = ""
                 for idx, i in enumerate(file_issues):
                     # Only give Llama a snippet if it's small, otherwise it gets slow
-                    trunc_snippet = str(i.get('snippet', ''))[:150].replace('\n', ' ')
+                    trunc_snippet = str(i.get('snippet', ''))[:400].replace('\n', ' ')
                     summary_for_ai += f"ID:{idx} | Issue: {i.get('issue')} | Code: {trunc_snippet}\n"
 
                 # 2. Call local Llama

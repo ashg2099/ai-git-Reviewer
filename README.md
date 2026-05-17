@@ -1,105 +1,152 @@
 # 🧠 AI-GitReviewer
 
-AI-GitReviewer is a professional-grade, hybrid code auditor. It combines Static Analysis (AST), Semantic Deep Learning (CodeBERT), and Generative AI (Llama-3 via Groq) to not just find bugs, but to architect their solutions.
-We’ve moved beyond "flagging issues" to providing Atomic, production-ready code refactors.
+> A professional-grade, hybrid code auditor that doesn't just find bugs — it fixes them.
 
-## 🛠️ Phase 1: Static Engine
-The tool currently performs deep structural analysis of your code using Python's ast module, with a robust Regex fallback for partial snippets.
+AI-GitReviewer combines three layers of intelligence to review your Python code:
 
-## 🔍 Issues Detected:
-1. Security: Detects dangerous eval() calls that could lead to code injection.
+- **Layer 1 — Static Analysis**: Deep AST parsing with regex fallback
+- **Layer 2 — Semantic AI**: CodeBERT understands code meaning, not just syntax
+- **Layer 3 — Generative AI**: Llama-3 via Groq provides production-ready refactors and architectural critique
 
-2. Bug Prevention: Identifies Mutable Default Arguments (e.g., def func(x=[])) which cause shared-state bugs.
+---
 
-3. Stability: Flags Bare except: blocks that silence critical system errors.
+## ✨ What It Detects
 
-4. Complexity: Monitors function signatures and flags functions with more than 5 arguments.
+| Category | What's Caught |
+|---|---|
+| 🔴 Security | `eval()` usage, hardcoded secrets & API keys |
+| 🔴 Logic | Mutable default arguments, recursion without base case |
+| 🟠 Stability | Bare `except:` blocks, blocking I/O in async functions |
+| 🟠 Complexity | Functions with more than 5 arguments |
+| 🟡 Best Practices | `== None` instead of `is None`, `print()` instead of logging |
+| 🔵 AI Insights | Weak crypto (MD5), poor naming conventions, unsafe file handling |
 
-5. Best Practices: Enforces is None for identity checks and discourages print() in favor of logging.
+---
 
-## 🤖 Phase 2: Semantic Brain (Complete)
-This phase introduced CodeBERT, a transformer model trained on millions of code snippets, allowing the tool to perform "Semantic Reviews."
+## 📦 Installation
 
-## 🧠 AI Features:
-1. Contextual Understanding: Distinguishes between safe and unsafe patterns (e.g., recognizing the safety of a with open() context manager vs. a raw open()).
+**Requires Python 3.9+**
 
-2. Hardcoded Secrets: Identifies high-entropy strings that resemble passwords or API keys.
+### Option A — Install directly from GitHub (recommended)
+```bash
+pip install git+https://github.com/ashg2099/ai-git-Reviewer.git
+```
 
-3. Naming Conventions: Flags non-descriptive variable names (like a, b, c) using semantic similarity.
+### Option B — Clone and install locally
+```bash
+git clone https://github.com/ashg2099/ai-git-Reviewer.git
+cd ai-git-Reviewer
+pip install -e ".[dev]"
+```
 
-4. Cryptographic Audit: Detects usage of weak hashing algorithms (like MD5) based on code structure rather than just keywords.
+---
 
-## 🚀 How to Use
-1. Installation
-Clone the repository and ensure you have a Python 3.x environment.
+## ⚙️ Setup
 
---> git clone https://github.com/your-username/ai-git-reviewer.git
---> cd ai-git-reviewer
+The tool uses Groq's API to power Llama-3 refactors. You need a free API key.
 
-2. Install Dependencies
-Use the requirements.txt file to install all necessary libraries
+1. Get a free key at [https://console.groq.com](https://console.groq.com)
+2. Create a `project.env` file in the root of the project you want to scan:
 
---> pip install --upgrade pip
---> pip install -r requirements.txt
+```bash
+cp project.env.example project.env
+```
 
-3. Running a Review
-The tool analyzes your staged changes (code you have git add-ed).
+Then open `project.env` and add your key:
 
---> python -m ai_gitreviewer review
-
-4. Running Tests
-Verified with pytest and pytest-cov for high reliability.
-
---> PYTHONPATH=. python -m pytest --cov=ai_gitreviewer tests/
-
-## 📈 Project Roadmap
-### ✅ Phase 1: Structural Analysis
-[x] AST-based logic for deep code understanding.
-
-[x] Regex fallback for syntax-broken snippets.
-
-[x] Line-specific error reporting.
-
-### 🏗️ Phase 2: The "Brain"
-[x] Integration of CodeBERT for semantic similarity.
-
-[x] Detection of poor naming conventions via vector space mapping.
-
-[x] High-precision thresholding (0.90) to minimize false positives.
-
-[x] Pattern matching against a dynamic "Known Bugs" database.
-Hybrid reporting (AST + AI insights in one output).
-
-### 🤖 Phase 3: Generative Intelligence
-[x] We have integrated Llama-3 (powered by Groq) to act as your team's Senior Architect.
-
-[x] Atomic Refactors: The tool now provides full-block code replacements for detected issues.
-
-[x] High-Speed Inference: Powered by Groq’s LPU for sub-second architectural feedback.
-
-[x] Architectural Critique: Analyzes your entire project tree to suggest structural improvements and scalability fixes.
-
-[x] Zero-Noise Thresholding: Combined with CodeBERT’s 0.90 similarity score, the LLM only suggests fixes when the logic is confirmed to be an anti-pattern.
-
-## 📦 Professional Installation
-AI-GitReviewer is now structured as a standard Python package. You can install it once and use it globally on any project.
-
-1. Install via GitHub
---> pip install git+https://github.com/your-username/ai-git-reviewer.git
-
-2. Configure your Environment
-The tool requires a Groq API Key to power the "Expert Architect" refactors. Create a project.env file in the root of the project you want to scan:
---> # project.env
 GROQ_API_KEY=your_gsk_key_here
 
-## 🚀 Usage Guide
-1. Standard Review (Staged Changes)
-Perfect for pre-commit checks. It only analyzes the code you are about to commit.
---> ai-review review
+> ⚠️ Never commit `project.env` — it's already in `.gitignore`
 
-2. Full Repository Audit
-Performs a deep scan of every Python file and provides a high-level architectural critique of the folder structure.
---> ai-review full-scan
+---
 
-3. Testing & Coverage
---> pytest
+## 🚀 Usage
+
+### 1. Check your Groq connection
+```bash
+ai-review status
+```
+
+### 2. Review staged changes (pre-commit check)
+Stage your files first, then run:
+```bash
+git add your_file.py
+ai-review review
+```
+This only reviews code you are about to commit — perfect as a pre-commit gate.
+
+### 3. Full repository audit
+```bash
+ai-review full-scan
+```
+Scans every Python file and generates an architectural critique of your entire project structure.
+
+### 4. Check version
+```bash
+ai-review version
+```
+
+All commands open an **HTML report** in your browser automatically with:
+- Per-issue code snippets
+- AI-generated fixes
+- Architectural recommendations
+
+---
+
+## 🧪 Running Tests
+
+```bash
+pytest -v
+```
+
+Run only fast static tests (no API key needed):
+```bash
+pytest tests/test_analyzer.py -v
+```
+
+---
+
+## 📁 Project Structure
+
+ai-git-Reviewer/
+├── src/
+│   └── ai_gitreviewer/
+│       ├── cli.py              # Typer CLI commands
+│       ├── main.py         # Full scan entry point
+│       └── core/
+│           ├── analyzer.py     # 3-layer analysis engine
+│           ├── nlp_engine.py   # CodeBERT + Groq integration
+│           ├── reporter.py     # HTML report generator
+│           ├── git_utils.py    # Git diff parsing
+│           └── cache_manager.py # File change detection
+├── tests/
+├── pyproject.toml
+├── requirements.txt
+└── project.env.example
+
+---
+
+## 📈 Roadmap
+
+- [x] Phase 1 — AST static analysis with regex fallback
+- [x] Phase 2 — CodeBERT semantic similarity engine
+- [x] Phase 3 — Llama-3 generative refactors via Groq
+- [ ] Phase 4 — GitHub Actions pre-commit integration
+- [ ] Phase 5 — Support for JavaScript / TypeScript
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open an issue first to discuss what you'd like to change.
+
+1. Fork the repo
+2. Create a branch: `git checkout -b feature/your-feature`
+3. Make your changes and run `pytest`
+4. Open a Pull Request
+
+---
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE) for details.

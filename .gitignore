@@ -8,6 +8,7 @@ __pycache__/
 env/
 venv/
 ENV/
+project.env
 
 # Testing & Coverage
 .coverage
@@ -20,3 +21,8 @@ htmlcov/
 # AI/ML - Hugging Face cache
 .cache/
 hub/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/

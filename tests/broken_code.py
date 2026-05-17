@@ -38,3 +38,5 @@ def calculate_factorial(n):
     # Semantic Target: "recursive function without base case"
     # AI identifies this structure as potentially infinite/unsafe
     return n * calculate_factorial(n - 1)
+
+# Broken code file

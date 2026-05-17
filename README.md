@@ -1,6 +1,7 @@
 # 🧠 AI-GitReviewer
 
-AI-GitReviewer is a hybrid intelligent code auditor that combines deep structural analysis (AST) with semantic deep learning (CodeBERT). It doesn't just look for broken syntax; it understands the "vibe" of your code to catch security risks and anti-patterns that traditional linters miss.
+AI-GitReviewer is a professional-grade, hybrid code auditor. It combines Static Analysis (AST), Semantic Deep Learning (CodeBERT), and Generative AI (Llama-3 via Groq) to not just find bugs, but to architect their solutions.
+We’ve moved beyond "flagging issues" to providing Atomic, production-ready code refactors.
 
 ## 🛠️ Phase 1: Static Engine
 The tool currently performs deep structural analysis of your code using Python's ast module, with a robust Regex fallback for partial snippets.
@@ -69,11 +70,36 @@ Verified with pytest and pytest-cov for high reliability.
 [x] Pattern matching against a dynamic "Known Bugs" database.
 Hybrid reporting (AST + AI insights in one output).
 
-### 🤖 Phase 3: Automated Refactoring (Coming soon)
-[ ] NLP-based suggestions: Using a Generative Model (like GPT or T5) to suggest better variable/function names.
+### 🤖 Phase 3: Generative Intelligence
+[x] We have integrated Llama-3 (powered by Groq) to act as your team's Senior Architect.
 
-[ ] AI-Suggested Fixes: Not just flagging issues, but providing the corrected code block.
+[x] Atomic Refactors: The tool now provides full-block code replacements for detected issues.
 
-[ ] DevOps Integration: Packaged as a GitHub Action for automated Pull Request reviews.
+[x] High-Speed Inference: Powered by Groq’s LPU for sub-second architectural feedback.
 
-[ ] Configuration: A .reviewer.yaml file to allow users to toggle specific AI rules.
+[x] Architectural Critique: Analyzes your entire project tree to suggest structural improvements and scalability fixes.
+
+[x] Zero-Noise Thresholding: Combined with CodeBERT’s 0.90 similarity score, the LLM only suggests fixes when the logic is confirmed to be an anti-pattern.
+
+## 📦 Professional Installation
+AI-GitReviewer is now structured as a standard Python package. You can install it once and use it globally on any project.
+
+1. Install via GitHub
+--> pip install git+https://github.com/your-username/ai-git-reviewer.git
+
+2. Configure your Environment
+The tool requires a Groq API Key to power the "Expert Architect" refactors. Create a project.env file in the root of the project you want to scan:
+--> # project.env
+GROQ_API_KEY=your_gsk_key_here
+
+## 🚀 Usage Guide
+1. Standard Review (Staged Changes)
+Perfect for pre-commit checks. It only analyzes the code you are about to commit.
+--> ai-review review
+
+2. Full Repository Audit
+Performs a deep scan of every Python file and provides a high-level architectural critique of the folder structure.
+--> ai-review full-scan
+
+3. Testing & Coverage
+--> pytest

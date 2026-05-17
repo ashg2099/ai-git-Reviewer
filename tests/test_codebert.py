@@ -9,7 +9,7 @@ def nlp_engine():
 
 def test_engine_initialization(nlp_engine):
     """Verify the model and tokenizer load correctly."""
-    assert nlp_engine.model is not None
+    assert nlp_engine.bert_model is not None
     assert nlp_engine.tokenizer is not None
     assert len(nlp_engine.bad_patterns) > 0
 
@@ -55,7 +55,7 @@ def test_semantic_discrimination(nlp_engine):
     unsafe_score = get_score(unsafe)
     safe_score = get_score(safe)
     
-    print(f"\nUnsafe Score: {unsafe_score:.4f} vs Safe Score: {safe_score:.4f}")
+    print(f"Scores - Unsafe: {unsafe_score:.4f}, Safe: {safe_score:.4f}")
     assert unsafe_score > safe_score
 
 def test_empty_input_handling(nlp_engine):

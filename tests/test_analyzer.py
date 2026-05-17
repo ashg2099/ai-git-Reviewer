@@ -55,7 +55,7 @@ def test_reviewer_catches_too_many_args():
 
 def test_reviewer_catches_recursion():
     # Use use_ai=True if your engine uses AST for recursion detection
-    engine = ReviewerEngine(use_ai=True)
+    engine = ReviewerEngine(use_ai=False)
     recursive_code = """
 def calculate_factorial(n):
     return n * calculate_factorial(n - 1)

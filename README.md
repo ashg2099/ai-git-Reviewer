@@ -25,73 +25,86 @@ AI-GitReviewer combines three layers of intelligence to review your Python code:
 
 ## 📦 Installation
 
-**Requires Python 3.9+**
+### Prerequisites
+- Python 3.9 or higher → [Download](https://www.python.org/downloads/)
+- Git → [Download](https://git-scm.com/downloads/)
+- A free Groq API key → [Get one here](https://console.groq.com)
 
-### Option A — Install directly from GitHub (recommended)
+### Install the package
+
 ```bash
 pip install git+https://github.com/ashg2099/ai-git-Reviewer.git
 ```
 
-### Option B — Clone and install locally
-```bash
-git clone https://github.com/ashg2099/ai-git-Reviewer.git
-cd ai-git-Reviewer
-pip install -e ".[dev]"
-```
+That's it — the `ai-review` command is now available globally on your system. No need to clone the repo.
 
 ---
 
-## ⚙️ Setup
+## ⚙️ One-time Setup
 
-The tool uses Groq's API to power Llama-3 refactors. You need a free API key.
+**Step 1 — Get a free Groq API key** at [https://console.groq.com](https://console.groq.com)
 
-1. Get a free key at [https://console.groq.com](https://console.groq.com)
-2. Set up your Groq API key — choose one option:
+**Step 2 — Set your key globally** (works across every project, forever):
 
-**Option A — Global (recommended):** Set once, works in every project:
 ```bash
 echo "GROQ_API_KEY=your_gsk_key_here" >> ~/.ai-gitreviewer.env
 ```
 
-**Option B — Per project:** Create a `project.env` in each repo you scan:
-```bash
-cp project.env.example project.env
-# then add your key inside project.env
+**Step 3 — Verify the connection:**
 
-> ⚠️ Never commit `project.env` — it's already in `.gitignore`
-
----
-
-## 🚀 Usage
-
-### 1. Check your Groq connection
 ```bash
 ai-review status
 ```
 
-### 2. Review staged changes (pre-commit check)
-Stage your files first, then run:
+You should see:
+✅ Connected to Groq API successfully.
+Model in use: llama-3.1-8b-instant
+
+> **Alternative — Per project setup:** If you prefer to set the key per project, create a `project.env` file in the root of each repo you want to scan:
+> ```
+> GROQ_API_KEY=your_gsk_key_here
+> ```
+> ⚠️ Never commit `project.env` — it's already in `.gitignore`
+
+---
+
+## 🚀 Quick Start
+
+### Review code before committing (recommended workflow)
+
 ```bash
+# Navigate to any Python project on your machine
+cd your-python-project
+
+# Stage the files you want to review
 git add your_file.py
+
+# Run the review — report opens in your browser automatically
 ai-review review
 ```
-This only reviews code you are about to commit — perfect as a pre-commit gate.
 
-### 3. Full repository audit
+### Scan an entire repository
+
 ```bash
+cd your-python-project
 ai-review full-scan
 ```
-Scans every Python file and generates an architectural critique of your entire project structure.
 
-### 4. Check version
-```bash
-ai-review version
-```
+All reports are saved to `~/.ai-gitreviewer/reports/` and open automatically in your browser. You'll get:
+- Per-issue code snippets with line numbers
+- AI-generated production-ready fixes
+- Architectural critique of your project structure
 
-All commands open an **HTML report** in your browser automatically with:
-- Per-issue code snippets
-- AI-generated fixes
-- Architectural recommendations
+---
+
+## 📟 All Commands
+
+| Command | Description |
+|---|---|
+| `ai-review status` | Check your Groq API connection |
+| `ai-review review` | Review staged changes only (pre-commit) |
+| `ai-review full-scan` | Scan every Python file in the project |
+| `ai-review version` | Show the current version |
 
 ---
 
@@ -113,18 +126,19 @@ pytest tests/test_analyzer.py -v
 ai-git-Reviewer/
 ├── src/
 │   └── ai_gitreviewer/
-│       ├── cli.py              # Typer CLI commands
-│       ├── main.py         # Full scan entry point
+│       ├── cli.py               # Typer CLI commands
+│       ├── main.py          # Full scan entry point
 │       └── core/
-│           ├── analyzer.py     # 3-layer analysis engine
-│           ├── nlp_engine.py   # CodeBERT + Groq integration
-│           ├── reporter.py     # HTML report generator
-│           ├── git_utils.py    # Git diff parsing
+│           ├── analyzer.py      # 3-layer analysis engine
+│           ├── nlp_engine.py    # CodeBERT + Groq integration
+│           ├── reporter.py      # HTML report generator
+│           ├── git_utils.py     # Git diff parsing
 │           └── cache_manager.py # File change detection
 ├── tests/
 ├── pyproject.toml
 ├── requirements.txt
 └── project.env.example
+
 
 ---
 

@@ -46,15 +46,17 @@ pip install -e ".[dev]"
 The tool uses Groq's API to power Llama-3 refactors. You need a free API key.
 
 1. Get a free key at [https://console.groq.com](https://console.groq.com)
-2. Create a `project.env` file in the root of the project you want to scan:
+2. Set up your Groq API key — choose one option:
 
+**Option A — Global (recommended):** Set once, works in every project:
 ```bash
-cp project.env.example project.env
+echo "GROQ_API_KEY=your_gsk_key_here" >> ~/.ai-gitreviewer.env
 ```
 
-Then open `project.env` and add your key:
-
-GROQ_API_KEY=your_gsk_key_here
+**Option B — Per project:** Create a `project.env` in each repo you scan:
+```bash
+cp project.env.example project.env
+# then add your key inside project.env
 
 > ⚠️ Never commit `project.env` — it's already in `.gitignore`
 

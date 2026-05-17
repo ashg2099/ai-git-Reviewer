@@ -59,10 +59,12 @@ def review():
     
     # 5. Generate the Report
     if all_results or arch_feedback:
-        report_file = "staged_report.html"
+        output_dir = os.path.join(os.path.expanduser("~"), ".ai-gitreviewer", "reports")
+        os.makedirs(output_dir, exist_ok=True)
+        report_file = os.path.join(output_dir, "staged_report.html")
         reporter = HTMLReporter(all_results, arch_feedback=arch_feedback, output_file=report_file)
         reporter.generate()
-        
+
         report_path = os.path.abspath(report_file)
         webbrowser.open(f"file://{report_path}")
         typer.secho(f"\n🚀 Staged report ready: {report_path}", fg=typer.colors.CYAN, bold=True)

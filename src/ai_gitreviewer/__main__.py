@@ -1,7 +1,9 @@
 import os, sys, time
 try:
+    from pathlib import Path
     from dotenv import load_dotenv
-    load_dotenv("project.env")
+    load_dotenv("project.env")                        # project-level
+    load_dotenv(Path.home() / ".ai-gitreviewer.env")  # global fallback
 except ImportError:
     pass
 
@@ -82,13 +84,15 @@ def run_and_report(directory="."):
         return None
     
     # 4. Generate Report
-    report_filename = "full_project_report.html"
+    output_dir = os.path.join(os.path.expanduser("~"), ".ai-gitreviewer", "reports")
+    os.makedirs(output_dir, exist_ok=True)
+    report_filename = os.path.join(output_dir, "full_project_report.html")
     reporter = HTMLReporter(results, arch_feedback=arch_feedback, output_file=report_filename)
     reporter.generate()
-    
+
     print(f"\n✨ Scan Complete!")
-    print(f"📊 Report: {os.path.abspath(report_filename)}")
-    return os.path.abspath(report_filename)
+    print(f"📊 Report: {report_filename}")
+    return report_filename
 
 if __name__ == "__main__":
     run_and_report(".")

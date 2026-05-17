@@ -3,8 +3,12 @@ import torch
 import json
 import re
 from groq import Groq
+from pathlib import Path
 from dotenv import load_dotenv
+
+# Check project-level first, then fall back to global user config
 load_dotenv("project.env")
+load_dotenv(Path.home() / ".ai-gitreviewer.env")
 from transformers import AutoTokenizer, AutoModel
 
 class NLPEngine:

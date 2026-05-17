@@ -191,7 +191,7 @@ class ReviewerEngine:
 
                 # 3. Map the { "fix": "...", "insight": "..." } structure back
                 for idx, issue in enumerate(file_issues):
-                    res = batch_fixes.get(str(idx))
+                    res = batch_fixes.get(f"ID{idx}") or batch_fixes.get(str(idx))
                     if isinstance(res, dict):
                         fix = res.get('fix', 'No code fix provided.')
                         insight = res.get('insight', 'No detailed insight.')
